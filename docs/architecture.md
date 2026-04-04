@@ -2,22 +2,38 @@
 
 ExamplePress is a WordPress theme that behaves like an operating system. The theme itself is immutable infrastructure — it ships a router, a guard system, a feature registry, and block rendering via Blockstudio. All site-specific code lives in companion plugins called **apps**.
 
-## The three-layer model
+## The four-layer model
 
 ```
 ┌─────────────────────────────────────────────┐
-│  Layer 3 — Additional Apps (extensions)     │
+│  Layer 4 — Additional Apps (extensions)     │
 │  Priority 20+, optional, additive           │
 ├─────────────────────────────────────────────┤
-│  Layer 2 — Theme App (main companion)       │
+│  Layer 3 — Theme App (main companion)       │
 │  Priority 10, owns primary routes           │
 ├─────────────────────────────────────────────┤
-│  Layer 1 — ExamplePress Theme (immutable)   │
+│  Layer 2 — ExamplePress Theme (immutable)   │
 │  Router, guards, features, Blockstudio      │
+├─────────────────────────────────────────────┤
+│  Layer 1 — ExamplePress MU (platform)       │
+│  MU plugin, self-updating kernel loader     │
 └─────────────────────────────────────────────┘
 ```
 
-### Layer 1: The Theme
+### Layer 1: The MU Plugin
+
+The ExamplePress MU plugin (`packages/mu`) is a self-updating WordPress MU plugin that loads before the theme. It consists of a thin loader (`examplepress-mu.php`) placed in `wp-content/mu-plugins/` and an application directory (`examplepress-mu/`) containing the platform kernel. On first load, if the kernel is missing, the loader fetches the latest release from GitHub and extracts it automatically.
+
+Structure:
+
+```
+mu-plugins/
+├── examplepress-mu.php          # Thin loader (auto-loaded by WordPress)
+└── examplepress-mu/             # Application directory
+    └── bootstrap.php            # Platform kernel entry point
+```
+
+### Layer 2: The Theme
 
 The theme never changes per-site. It provides:
 
@@ -37,7 +53,7 @@ Key constants defined in `functions.php`:
 
 Setting `EP_DEV_MODE` to `true` in `wp-config.php` disables all three template guards for development.
 
-### Layer 2: The Theme App
+### Layer 3: The Theme App
 
 The main companion plugin — scaffolded from a template repo and installed to `wp-content/plugins/{slug}/`. It declares ownership of routes (front page, single post, archive, etc.) at a given priority and provides the template blocks that render those routes.
 
@@ -57,7 +73,7 @@ wp-content/plugins/my-site-core/
 
 The plugin header `Theme: examplepress-theme` is how the theme discovers the app. Without it, the plugin is invisible to the app registry.
 
-### Layer 3: Additional Apps
+### Layer 4: Additional Apps
 
 Any number of companion plugins can coexist. Each registers its own route origin at a different priority (lower number = evaluated first). If two apps both claim `front`, the lower-priority app wins. Route conflicts are detectable via `examplepress_detect_route_conflicts()`.
 

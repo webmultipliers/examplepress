@@ -14,6 +14,11 @@ ExamplePress replaces the standard WordPress template hierarchy with a router-fi
 Site                                         Fleet Infrastructure
 ┌──────────────────────────────────────┐
 │                                      │
+│  examplepress-mu                     │
+│  MU plugin. Self-updating platform   │
+│  kernel — loads before the theme,    │
+│  bootstraps the environment.         │
+│       │                              │
 │  examplepress-theme                  │
 │  The operating system. Routes        │
 │  requests, orchestrates hooks,       │
@@ -46,6 +51,10 @@ Site                                         Fleet Infrastructure
 
 ## Repositories
 
+### Platform
+
+**[`examplepress-mu`](https://github.com/webmultipliers/examplepress-mu)** — A self-updating MU plugin that acts as the platform kernel. Loaded by WordPress before the theme, it consists of a thin loader that fetches and bootstraps the core application from GitHub releases automatically.
+
 ### Infrastructure
 
 **[`examplepress-theme`](https://github.com/webmultipliers/examplepress-theme)** — The foundational layer. Removes the standard WordPress template hierarchy and replaces it with a router-first architecture. Routes requests, orchestrates the environment, installs dependencies, and provides the hooks that allow apps to render content.
@@ -75,13 +84,14 @@ Site                                         Fleet Infrastructure
 ```
 examplepress/
 ├── docs/
-│   ├── architecture.md     # Three-layer model, config pipeline, bootstrap
+│   ├── architecture.md     # Four-layer model, config pipeline, bootstrap
 │   ├── apps.md             # App anatomy, lifecycle, scaffolding, registry
 │   ├── routing.md          # Router-first architecture, route origins, dispatch
 │   ├── distribution.md     # Troy Server, Troy Bridge, theme updates, channels
 │   ├── blockstudio.md      # Zero-build block rendering, block.json conventions
 │   └── glossary.md         # Theme vs App vs Companion, Troy vs Bridge, etc.
 ├── packages/
+│   ├── mu/                 ← examplepress-mu
 │   ├── theme/              ← examplepress-theme
 │   ├── theme-update/       ← examplepress-theme-update
 │   ├── theme-app/          ← examplepress-theme-app
