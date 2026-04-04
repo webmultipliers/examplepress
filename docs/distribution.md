@@ -125,7 +125,7 @@ The `updates.json` file in GitHub Releases:
 | `ep_github_releases` | 30 minutes | Releases list |
 | Error sentinel | 5 minutes | Prevents hammering after failures |
 
-Cache is flushed on theme switch, after theme update, or manually via `DELETE /wp-json/ep-theme-update/v1/check`.
+Cache is flushed on theme switch, after theme update, or manually via `POST /wp-json/ep-theme-update/v1/check`.
 
 ### REST API
 

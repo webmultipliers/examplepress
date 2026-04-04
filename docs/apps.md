@@ -92,6 +92,8 @@ add_action( 'init', function () {
 
 The `routing` block is declarative metadata — it documents what the plugin registers in PHP and is used by the admin UI. The `troy` block stores connection details for the distribution server.
 
+> **Note**: The template repo (`packages/theme-app`) ships a minimal stub with a single placeholder route. The example above shows a filled-in manifest like the demo app's. The `condition` field is optional metadata — routing logic lives in the PHP callables registered by `examplepress_register_route_origin()`.
+
 ## Discovery and registry
 
 Apps are tracked in two places that merge at read time:
@@ -147,7 +149,7 @@ The plugin is **not** activated automatically after scaffolding.
 
 Standard WordPress plugin activation/deactivation. When active, the app's route origins are registered and its template blocks are available. When deactivated, routes disappear and the router falls through to lower-priority origins or the default `get-started` template.
 
-- Activate: WordPress Plugins screen or `POST /examplepress/v1/apps/{slug}/activate`
+- Activate: WordPress Plugins screen (no REST endpoint — standard WordPress activation)
 - Deactivate: `POST /examplepress/v1/apps/{slug}/deactivate`
 
 ### Connection
@@ -160,7 +162,7 @@ Standard WordPress plugin activation/deactivation. When active, the app's route 
 
 ### Destruction
 
-`examplepress_destroy_app()` deletes an app everywhere:
+`DELETE /examplepress/v1/apps/{slug}/destroy` triggers `examplepress_destroy_app()`, which deletes an app everywhere:
 
 1. Deactivate and delete the local plugin directory
 2. Delete the GitHub repo via API
@@ -179,15 +181,15 @@ Each step is attempted independently — partial failures are reported but don't
 
 ## Data enrichment
 
-Apps can enrich the data passed to their template blocks by filtering `examplepress_route_data`:
+Apps can enrich the data passed to their template blocks by filtering `examplepress_route_data`. The filter receives three arguments: `$data`, `$target_slug`, and `$full_block_name`:
 
 ```php
-add_filter( 'examplepress_route_data', function ( $data, $slug ) {
+add_filter( 'examplepress_route_data', function ( $data, $slug, $block_name ) {
     if ( $slug === 'single' ) {
         $data['post'] = get_queried_object();
     }
     return $data;
-}, 10, 2 );
+}, 10, 3 );
 ```
 
-This data is passed as attributes when Blockstudio renders the template block.
+This data is passed as attributes when Blockstudio renders the template block. You can accept fewer parameters if you don't need the block name (the demo plugin uses `10, 2`).

@@ -99,6 +99,8 @@ The guard system enforces immutability at the WordPress level:
 
 1. Constants (`EP_THEME_VERSION`, `EP_THEME_PATH`, `EP_THEME_URI`)
 2. Composer autoloader
-3. Core includes: `config.php` → `helpers.php` → `feature-registry.php` → `features.php` → `route-registry.php` → `router.php` → `apps.php` → `app-cpt.php` → `app-registry.php` → `api.php` → `dependencies.php` → `cli.php` → `github.php` → `scaffolder.php`
-4. Blockstudio inner-block wrapping filter
-5. Feature boot on `after_setup_theme`
+3. Core includes: `helpers.php` → `config.php` → `feature-registry.php` → `features.php` → `route-registry.php` → `router.php` → `dependencies.php` → `notifications.php` → `apps.php` → `app-registry.php` → `app-cpt.php` → `github.php` → `github-app.php` → `scaffolder.php` → `api.php`
+4. Admin includes (conditional on `is_admin()`): `admin-assets.php`, `settings-data.php`, `admin-registry.php`, and page controllers (`settings`, `apps`, `theme`, `navigation`, `dependencies`, `library`, `notifications`, `system`, `docs`, `editor`)
+5. Late includes: `cli.php`, `demo-bootstrap.php`, `updater-bootstrap.php`
+6. Blockstudio pattern path filter + inner-block wrapping filter
+7. Feature boot on `after_setup_theme`

@@ -100,7 +100,14 @@ Blockstudio provides two functions for programmatic block rendering:
 | `bs_block( $value )` | String | Get block content (used by the router) |
 | `bs_render_block( $value )` | void | Echo block content directly |
 
-The router uses `bs_block()` to dispatch to the resolved template block, passing enriched route data as attributes.
+Both accept an array with `id` (block name) and `data` (attributes). The router calls `bs_block()` like this:
+
+```php
+$block_content = bs_block( [
+    'id'   => $full_block_name,   // e.g. 'my-site-core/template-front'
+    'data' => $route_data,        // enriched via examplepress_route_data filter
+] );
+```
 
 ## Configuration
 

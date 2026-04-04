@@ -25,21 +25,21 @@ Site                                         Fleet Infrastructure
 │                                      │     │ hub. Stores and       │
 │  examplepress-theme-update           │     │ serves versioned      │
 │  Standalone updater. Survives        │     │ app releases.         │
-│  theme fatal errors to pull          │     └──────▲────────────────┘
-│  patches from source.                │            │
-│                                      │     ┌──────┴────────────────┐
-│  examplepress-troy-bridge            │     │ Connected sites       │
-│  Client-side connector to Troy.      │     │ browse, verify        │
-│  Handles license verification        │     │ licenses, and pull    │
-│  and fleet-wide app updates.         │     │ updates from Troy.    │
-│                                      │     └───────────────────────┘
-│  blockstudio                         │
-│  Rendering engine. Filesystem-based  │
-│  block registration — drop a         │
-│  block.json + PHP template,          │
-│  no build step required.             │
-│                                      │
-└──────────────────────────────────────┘
+│  theme fatal errors to pull          │     │                       │
+│  patches from source.                │     │ examplepress-troy-    │
+│                                      │     │ bridge                │
+│  blockstudio                         │     │ Server-side bridge.   │
+│  Rendering engine. Filesystem-based  │     │ Adds provisioning     │
+│  block registration — drop a         │     │ endpoints for app     │
+│  block.json + PHP template,          │     │ scaffolding.          │
+│  no build step required.             │     └──────▲────────────────┘
+│                                      │            │
+└──────────────────────────────────────┘     ┌──────┴────────────────┐
+                                             │ Connected sites       │
+                                             │ pull updates and      │
+                                             │ verify licenses       │
+                                             │ from Troy.            │
+                                             └───────────────────────┘
 ```
 
 ---
@@ -60,7 +60,7 @@ Site                                         Fleet Infrastructure
 
 ### Distribution
 
-**[`examplepress-troy-bridge`](https://github.com/webmultipliers/examplepress-troy-bridge)** — Client-side connector between an ExamplePress site and a central Troy server. Distinct from custom apps deployed via GitHub to a single site — the Troy Bridge handles browsing, license verification, and pulling unified app updates from a central hub. Powers fleet management, distributed product ecosystems, and WordPress-as-a-Service models.
+**[`examplepress-troy-bridge`](https://github.com/webmultipliers/examplepress-troy-bridge)** — A server-side bridge plugin installed on the Troy Server. Adds REST endpoints for programmatic plugin provisioning and health checks so that ExamplePress's app scaffolding flow can register new apps on Troy in a single API call. Without it, each step (plugin creation, GitHub integration, tag fetching) would require manual setup in the Troy admin.
 
 ### External Dependencies
 
