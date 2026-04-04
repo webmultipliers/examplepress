@@ -19,3 +19,6 @@
 [submodule "vendor/troy"]
 	path = vendor/troy
 	url = https://github.com/sybrew/troy.git
+[submodule "packages/mu"]
+	path = packages/mu
+	url = https://github.com/webmultipliers/examplepress-mu.git
