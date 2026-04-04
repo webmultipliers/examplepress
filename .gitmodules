@@ -1,0 +1,21 @@
+[submodule "packages/theme"]
+	path = packages/theme
+	url = https://github.com/webmultipliers/examplepress-theme.git
+[submodule "packages/theme-update"]
+	path = packages/theme-update
+	url = https://github.com/webmultipliers/examplepress-theme-update.git
+[submodule "packages/theme-app"]
+	path = packages/theme-app
+	url = https://github.com/webmultipliers/examplepress-theme-app.git
+[submodule "packages/theme-demo"]
+	path = packages/theme-demo
+	url = https://github.com/webmultipliers/examplepress-theme-demo.git
+[submodule "packages/troy-bridge"]
+	path = packages/troy-bridge
+	url = https://github.com/webmultipliers/examplepress-troy-bridge.git
+[submodule "vendor/blockstudio"]
+	path = vendor/blockstudio
+	url = https://github.com/inline0/blockstudio.git
+[submodule "vendor/troy"]
+	path = vendor/troy
+	url = https://github.com/sybrew/troy.git
