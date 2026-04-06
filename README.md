@@ -66,7 +66,7 @@ Site                                         ┌──────────�
 
 **[`examplepress-theme-app`](https://github.com/webmultipliers/examplepress-theme-app)** — Boilerplate template repository for scaffolding new apps. Instead of custom code in `functions.php`, developers fork this template to create isolated, version-controlled apps (standard WordPress plugins) that handle specific routing and content logic through Blockstudio.
 
-**[`examplepress-theme-demo`](https://github.com/webmultipliers/examplepress-theme-demo)** — Kitchen sink reference implementation. A fully configured working example showing how the theme, apps, and ecosystem tools interact. Serves as a blueprint for developers to understand routing, block rendering, and deployment patterns.
+**[`examplepress-demo`](https://github.com/webmultipliers/examplepress-demo)** — Kitchen sink reference implementation. A fully configured working example showing how the theme, apps, and ecosystem tools interact. Serves as a blueprint for developers to understand routing, block rendering, and deployment patterns.
 
 ### Distribution
 
