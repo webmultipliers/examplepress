@@ -92,7 +92,7 @@ add_action( 'init', function () {
 
 The `routing` block is declarative metadata — it documents what the plugin registers in PHP and is used by the admin UI. The `troy` block stores connection details for the distribution server.
 
-> **Note**: The template repo (`packages/theme-app`) ships a minimal stub with a single placeholder route. The example above shows a filled-in manifest like the demo app's. The `condition` field is optional metadata — routing logic lives in the PHP callables registered by `examplepress_register_route_origin()`.
+> **Note**: The template repo (`packages/wp/plugins/examplepress-theme-app`) ships a minimal stub with a single placeholder route. The example above shows a filled-in manifest like the demo app's. The `condition` field is optional metadata — routing logic lives in the PHP callables registered by `examplepress_register_route_origin()`.
 
 ## Discovery and registry
 

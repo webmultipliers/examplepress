@@ -1,24 +1,24 @@
-[submodule "packages/theme"]
-	path = packages/theme
+[submodule "packages/wp/themes/examplepress-theme"]
+	path = packages/wp/themes/examplepress-theme
 	url = https://github.com/webmultipliers/examplepress-theme.git
-[submodule "packages/theme-update"]
-	path = packages/theme-update
-	url = https://github.com/webmultipliers/examplepress-theme-update.git
-[submodule "packages/theme-app"]
-	path = packages/theme-app
+[submodule "packages/wp/plugins/examplepress-theme-app"]
+	path = packages/wp/plugins/examplepress-theme-app
 	url = https://github.com/webmultipliers/examplepress-theme-app.git
-[submodule "packages/theme-demo"]
-	path = packages/theme-demo
+[submodule "packages/wp/plugins/examplepress-theme-demo"]
+	path = packages/wp/plugins/examplepress-theme-demo
 	url = https://github.com/webmultipliers/examplepress-theme-demo.git
-[submodule "packages/troy-bridge"]
-	path = packages/troy-bridge
+[submodule "packages/wp/plugins/examplepress-theme-update"]
+	path = packages/wp/plugins/examplepress-theme-update
+	url = https://github.com/webmultipliers/examplepress-theme-update.git
+[submodule "packages/wp/plugins/examplepress-troy-bridge"]
+	path = packages/wp/plugins/examplepress-troy-bridge
 	url = https://github.com/webmultipliers/examplepress-troy-bridge.git
-[submodule "vendor/blockstudio"]
-	path = vendor/blockstudio
-	url = https://github.com/inline0/blockstudio.git
-[submodule "vendor/troy"]
-	path = vendor/troy
-	url = https://github.com/sybrew/troy.git
-[submodule "packages/mu"]
-	path = packages/mu
+[submodule "packages/wp/mu-plugins/examplepress-mu"]
+	path = packages/wp/mu-plugins/examplepress-mu
 	url = https://github.com/webmultipliers/examplepress-mu.git
+[submodule "packages/vendor/blockstudio"]
+	path = packages/vendor/blockstudio
+	url = https://github.com/inline0/blockstudio.git
+[submodule "packages/vendor/troy"]
+	path = packages/vendor/troy
+	url = https://github.com/sybrew/troy.git

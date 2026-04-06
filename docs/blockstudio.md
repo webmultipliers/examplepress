@@ -4,7 +4,7 @@ ExamplePress renders everything through [Blockstudio](https://blockstudio.dev/) 
 
 ## How Blockstudio works in ExamplePress
 
-Blockstudio is a vendor dependency (`vendor/blockstudio/`), currently v7.1.2. The theme and each app initialize it independently:
+Blockstudio is a vendor dependency (`packages/vendor/blockstudio/`), currently v7.1.2. The theme and each app initialize it independently:
 
 **Theme** (in `functions.php`):
 - Blockstudio discovers blocks in `blockstudio/` (the router block, site-editor overrides, login screen, patterns)

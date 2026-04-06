@@ -22,7 +22,9 @@ ExamplePress is a WordPress theme that behaves like an operating system. The the
 
 ### Layer 1: The MU Plugin
 
-The ExamplePress MU plugin (`packages/mu`) is a self-updating WordPress MU plugin that loads before the theme. It consists of a thin loader (`examplepress-mu.php`) placed in `wp-content/mu-plugins/` and an application directory (`examplepress-mu/`) containing the platform kernel. On first load, if the kernel is missing, the loader fetches the latest release from GitHub and extracts it automatically.
+The ExamplePress MU plugin (`packages/wp/mu-plugins/examplepress-mu`) is a self-updating WordPress MU plugin that loads before the theme. It consists of a thin loader (`examplepress-mu.php`) placed in `wp-content/mu-plugins/` and an application directory (`examplepress-mu/`) containing the platform kernel.
+
+On first load, if the kernel is missing, the loader fetches the latest release from GitHub and extracts it automatically. After installation, a WP-Cron job checks for new releases every 12 hours, downloads the update ZIP, validates its SHA-256 checksum, and overwrites the kernel in place — no admin intervention required. This is one of two GitHub-based updaters that keep the platform healthy (the other is the Theme Update plugin).
 
 Structure:
 

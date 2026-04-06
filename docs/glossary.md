@@ -8,7 +8,7 @@ ExamplePress redefines several WordPress terms and introduces its own. This glos
 
 In WordPress, a theme controls appearance. In ExamplePress, the **theme** is the immutable infrastructure layer — a router, guard system, feature registry, and Blockstudio integration. It never contains site-specific templates or styles. Think of it as the OS kernel.
 
-**Package**: `packages/theme` (submodule: `examplepress-theme`)
+**Package**: `packages/wp/themes/examplepress-theme`
 
 ### App
 
@@ -18,7 +18,7 @@ A WordPress plugin that declares itself as an ExamplePress companion via the `Th
 
 The primary app for a site. Scaffolded from a template repo, it typically owns all major routes (front, single, archive, 404) at priority 10. Most sites have exactly one theme app plus optional additional apps at higher priority numbers.
 
-**Template**: `packages/theme-app` (submodule: `examplepress-theme-app`)
+**Template**: `packages/wp/plugins/examplepress-theme-app`
 
 ### Route origin
 
@@ -44,7 +44,7 @@ A feature that prevents WordPress's site editor from interfering with the router
 
 ### Troy Server
 
-A WordPress plugin (`vendor/troy/`) that turns a WordPress site into a software distribution and licensing server. Manages plugin entries, GitHub/WordPress.org integrations, release processing, and update delivery.
+A WordPress plugin (`packages/vendor/troy/`) that turns a WordPress site into a software distribution and licensing server. Used exclusively for distributing apps shared across multiple sites — not for the MU plugin or theme, which update directly from GitHub. Manages plugin entries, GitHub/WordPress.org integrations, release processing, and update delivery.
 
 ### Troy Client
 
@@ -52,13 +52,21 @@ The companion to Troy Server, installed on end-user sites. Intercepts WordPress 
 
 ### Troy Bridge
 
-A plugin (`packages/troy-bridge`) installed on the Troy Server. Adds a provisioning REST endpoint so ExamplePress can create Troy plugin entries in one API call during app scaffolding.
+A plugin (`packages/wp/plugins/examplepress-troy-bridge`) installed on the Troy Server. Adds a provisioning REST endpoint so ExamplePress can create Troy plugin entries in one API call during app scaffolding.
+
+### GitHub Updaters
+
+The collective term for the two mechanisms that keep the ExamplePress platform healthy on every site: the **MU Self-Updater** (built into the MU plugin kernel) and the **Theme Update** plugin. Both pull releases directly from GitHub — neither uses Troy.
+
+### MU Self-Updater
+
+The built-in update mechanism inside the ExamplePress MU plugin kernel (`packages/wp/mu-plugins/examplepress-mu`). A WP-Cron job fires twice daily, fetches the `updates.json` manifest from the latest GitHub release, compares versions, and — if newer — downloads the ZIP, validates its SHA-256 checksum, and overwrites the kernel and loader in place. Requires no admin intervention.
 
 ### Theme Update
 
-A companion plugin (`packages/theme-update`) that manages ExamplePress theme versioning through GitHub Releases. Supports stable/development channels and version pinning.
+A companion plugin (`packages/wp/plugins/examplepress-theme-update`) that manages ExamplePress theme versioning through GitHub Releases. Pulls updates directly from GitHub — not through Troy. Supports stable/development channels and version pinning.
 
-**Package**: `packages/theme-update` (submodule: `examplepress-theme-update`)
+**Package**: `packages/wp/plugins/examplepress-theme-update`
 
 ### Channel
 
@@ -72,7 +80,7 @@ Locks updates to a specific version ceiling. If pinned to 1.2.3, the site won't 
 
 ### Blockstudio
 
-A vendor dependency (`vendor/blockstudio/`) that provides zero-build block rendering. Blocks are `block.json` + `index.php` pairs — no webpack, no `@wordpress/scripts`, no JS build pipeline. Blockstudio handles discovery, SCSS compilation, asset scoping, and registration.
+A vendor dependency (`packages/vendor/blockstudio/`) that provides zero-build block rendering. Blocks are `block.json` + `index.php` pairs — no webpack, no `@wordpress/scripts`, no JS build pipeline. Blockstudio handles discovery, SCSS compilation, asset scoping, and registration.
 
 ### `bs_block()`
 
@@ -116,6 +124,6 @@ A shadow Custom Post Type (no UI) used as the persistent app registry. Stores Gi
 
 ### Theme Demo
 
-A reference companion plugin (`packages/theme-demo`) that demonstrates route registration, data enrichment, and template block rendering. Useful as a working example alongside the template repo.
+A reference companion plugin (`packages/wp/plugins/examplepress-theme-demo`) that demonstrates route registration, data enrichment, and template block rendering. Useful as a working example alongside the template repo.
 
-**Package**: `packages/theme-demo` (submodule: `examplepress-theme-demo`)
+**Package**: `packages/wp/plugins/examplepress-theme-demo`
