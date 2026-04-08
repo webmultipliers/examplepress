@@ -7,9 +7,6 @@
 [submodule "packages/wp/plugins/examplepress-theme-demo"]
 	path = packages/wp/plugins/examplepress-theme-demo
 	url = https://github.com/webmultipliers/examplepress-theme-demo.git
-[submodule "packages/wp/plugins/examplepress-theme-update"]
-	path = packages/wp/plugins/examplepress-theme-update
-	url = https://github.com/webmultipliers/examplepress-theme-update.git
 [submodule "packages/wp/plugins/examplepress-troy-bridge"]
 	path = packages/wp/plugins/examplepress-troy-bridge
 	url = https://github.com/webmultipliers/examplepress-troy-bridge.git

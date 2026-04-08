@@ -56,17 +56,15 @@ A plugin (`packages/wp/plugins/examplepress-troy-bridge`) installed on the Troy 
 
 ### GitHub Updaters
 
-The collective term for the two mechanisms that keep the ExamplePress platform healthy on every site: the **MU Self-Updater** (built into the MU plugin kernel) and the **Theme Update** plugin. Both pull releases directly from GitHub — neither uses Troy.
+The collective term for the two mechanisms that keep the ExamplePress platform healthy on every site: the **MU Self-Updater** and the **Theme Update Provider** — both built into the MU plugin kernel. Both pull releases directly from GitHub — neither uses Troy.
 
 ### MU Self-Updater
 
 The built-in update mechanism inside the ExamplePress MU plugin kernel (`packages/wp/mu-plugins/examplepress-mu`). A WP-Cron job fires twice daily, fetches the `updates.json` manifest from the latest GitHub release, compares versions, and — if newer — downloads the ZIP, validates its SHA-256 checksum, and overwrites the kernel and loader in place. Requires no admin intervention.
 
-### Theme Update
+### Theme Update Provider
 
-A companion plugin (`packages/wp/plugins/examplepress-theme-update`) that manages ExamplePress theme versioning through GitHub Releases. Pulls updates directly from GitHub — not through Troy. Supports stable/development channels and version pinning.
-
-**Package**: `packages/wp/plugins/examplepress-theme-update`
+A subsystem inside the MU kernel (`packages/wp/mu-plugins/examplepress-mu/examplepress-mu/src/Infrastructure/ThemeUpdateProvider.php`) that manages ExamplePress theme versioning through GitHub Releases. Pulls updates directly from GitHub — not through Troy. Supports stable/development channels and version pinning.
 
 ### Channel
 

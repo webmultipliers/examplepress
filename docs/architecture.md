@@ -24,7 +24,9 @@ ExamplePress is a WordPress theme that behaves like an operating system. The the
 
 The ExamplePress MU plugin (`packages/wp/mu-plugins/examplepress-mu`) is a self-updating WordPress MU plugin that loads before the theme. It consists of a thin loader (`examplepress-mu.php`) placed in `wp-content/mu-plugins/` and an application directory (`examplepress-mu/`) containing the platform kernel.
 
-On first load, if the kernel is missing, the loader fetches the latest release from GitHub and extracts it automatically. After installation, a WP-Cron job checks for new releases every 12 hours, downloads the update ZIP, validates its SHA-256 checksum, and overwrites the kernel in place — no admin intervention required. This is one of two GitHub-based updaters that keep the platform healthy (the other is the Theme Update plugin).
+On first load, if the kernel is missing, the loader fetches the latest release from GitHub and extracts it automatically. After installation, a WP-Cron job checks for new releases every 12 hours, downloads the update ZIP, validates its SHA-256 checksum, and overwrites the kernel in place — no admin intervention required.
+
+The MU also owns theme updates directly. Two distinct update subsystems live inside this single repository: the **MU self-updater** (kernel + loader) and **`Infrastructure/ThemeUpdateProvider`** (channel/pin/install/reinstall against `webmultipliers/examplepress-theme`).
 
 Structure:
 
@@ -49,7 +51,7 @@ Key constants defined in `functions.php`:
 
 | Constant | Value |
 |---|---|
-| `EP_THEME_VERSION` | From `style.css` header (currently 1.0.8) |
+| `EP_THEME_VERSION` | From `style.css` header (currently 1.2.4) |
 | `EP_THEME_PATH` | `get_template_directory()` |
 | `EP_THEME_URI` | `get_template_directory_uri()` |
 
@@ -81,7 +83,7 @@ Any number of companion plugins can coexist. Each registers its own route origin
 
 ## Configuration pipeline
 
-`examplepress.json` in the theme root is the master configuration file. On load (`inc/config.php`), it is normalized into feature options through two shorthand systems:
+`examplepress.json` in the theme root is the master configuration file. The MU kernel parses it on load and normalizes it into feature options through two shorthand systems:
 
 1. **Design shorthand** — `design.colors`, `design.layout`, `design.typography`, etc. are expanded into `features.theme-colors.options.palette`, `features.theme-layout.options.wide_size`, and so on.
 2. **Blockstudio shorthand** — `blockstudio.assets`, `blockstudio.tailwind`, `blockstudio.dev`, etc. are expanded into corresponding `blockstudio-*` feature options.
@@ -90,7 +92,7 @@ This means the JSON file is the single source of truth for design tokens, Blocks
 
 ## Feature registry
 
-Features are registered in `inc/features/` and booted on `after_setup_theme`. Each feature has:
+Features are registered by the MU kernel and booted on `after_setup_theme`. Each feature has:
 
 - An **id** (kebab-case, e.g. `guard-template-redirect`)
 - An **enabled** state (resolved: PHP filter > JSON > default)
@@ -100,8 +102,6 @@ Features are registered in `inc/features/` and booted on `after_setup_theme`. Ea
 Simple features are wired automatically when enabled. Complex features (like guards) always run their setup callable and check enablement internally.
 
 ## Immutability enforcement
-
-`examplepress_check_theme_immutability()` (`inc/route-registry.php`) verifies the theme directory contains only known files and directories. This is used in health checks and CI to ensure no one has modified the theme directly.
 
 The guard system enforces immutability at the WordPress level:
 
@@ -113,12 +113,18 @@ The guard system enforces immutability at the WordPress level:
 
 ## Bootstrap sequence
 
-`functions.php` loads everything in a specific order:
+The platform boots in two stages: the MU kernel loads first (as an MU plugin), then the theme loads.
+
+**Stage 1 — MU Kernel** (`examplepress-mu/bootstrap.php`):
+
+The kernel bootstraps the full platform infrastructure — routing engine, feature registry, configuration pipeline, admin dashboard (10 pages), guards, security, app scaffolding, and REST API (namespace `examplepress-mu/v1`).
+
+**Stage 2 — Theme** (`functions.php`):
+
+The theme is strictly a presentation layer. Its startup is minimal:
 
 1. Constants (`EP_THEME_VERSION`, `EP_THEME_PATH`, `EP_THEME_URI`)
 2. Composer autoloader
-3. Core includes: `helpers.php` → `config.php` → `feature-registry.php` → `features.php` → `route-registry.php` → `router.php` → `dependencies.php` → `notifications.php` → `apps.php` → `app-registry.php` → `app-cpt.php` → `github.php` → `github-app.php` → `scaffolder.php` → `api.php`
-4. Admin includes (conditional on `is_admin()`): `admin-assets.php`, `settings-data.php`, `admin-registry.php`, and page controllers (`settings`, `apps`, `theme`, `navigation`, `dependencies`, `library`, `notifications`, `system`, `docs`, `editor`)
-5. Late includes: `cli.php`, `demo-bootstrap.php`, `updater-bootstrap.php`
-6. Blockstudio pattern path filter + inner-block wrapping filter
-7. Feature boot on `after_setup_theme`
+3. Text domain loading on `after_setup_theme`
+4. Blockstudio patterns path registration filter
+5. Blockstudio inner-block wrapping exemption filter (exempts router and template blocks)

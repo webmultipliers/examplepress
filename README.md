@@ -20,9 +20,11 @@ Site                                         ┌──────────�
 │  MU plugin. Self-updating            │     │ twice daily, downloads │
 │  platform kernel — loads before      │     │ + validates updates.   │
 │  the theme, bootstraps the env.      │     │                       │
-│       │                              │     │ Theme updater fetches  │
-│  examplepress-theme                  │     │ releases on demand or  │
-│  The operating system. Routes  ──────┼──── │ via admin check.       │
+│  Also owns the theme update          │     │ ThemeUpdateProvider    │
+│  pipeline (ThemeUpdateProvider).     │◄────│ (inside the MU)        │
+│       │                              │     │ fetches theme releases │
+│  examplepress-theme                  │     │ on demand or via       │
+│  The operating system. Routes        │     │ admin check.           │
 │  requests, orchestrates hooks,       │     └───────────────────────┘
 │  installs dependencies.              │
 │       │                              │     Fleet Distribution
@@ -30,16 +32,16 @@ Site                                         ┌──────────�
 │       ├── App (plugin)  ◄────────────┼──── ┌───────────────────────┐
 │       └── App (plugin)               │     │ troy                  │
 │                                      │     │ Central hub for apps  │
-│  examplepress-theme-update           │     │ shared across sites.  │
-│  Fetches theme releases from         │     │                       │
-│  GitHub. Supports channels           │     │ examplepress-troy-    │
-│  and version pinning.                │     │ bridge                │
-│                                      │     │ Server-side bridge.   │
-│  blockstudio                         │     │ Adds provisioning     │
-│  Rendering engine. Filesystem-based  │     │ endpoints for app     │
-│  block registration — drop a         │     │ scaffolding.          │
-│  block.json + PHP template,          │     └──────▲────────────────┘
-│  no build step required.             │            │
+│  blockstudio                         │     │ shared across sites.  │
+│  Rendering engine. Filesystem-based  │     │                       │
+│  block registration — drop a         │     │ examplepress-troy-    │
+│  block.json + PHP template,          │     │ bridge                │
+│  no build step required.             │     │ Server-side bridge.   │
+│                                      │     │ Adds provisioning     │
+│                                      │     │ endpoints for app     │
+│                                      │     │ scaffolding.          │
+│                                      │     └──────▲────────────────┘
+│                                      │            │
 └──────────────────────────────────────┘     ┌──────┴────────────────┐
                                              │ Connected sites       │
                                              │ pull shared app       │
@@ -54,13 +56,11 @@ Site                                         ┌──────────�
 
 ### Platform
 
-**[`examplepress-mu`](https://github.com/webmultipliers/examplepress-mu)** — A self-updating MU plugin that acts as the platform kernel. Loaded by WordPress before the theme, it consists of a thin loader that fetches and bootstraps the core application from GitHub releases automatically. A built-in WP-Cron job checks for updates twice daily, validates downloads with SHA-256, and overwrites the kernel in place.
+**[`examplepress-mu`](https://github.com/webmultipliers/examplepress-mu)** — A self-updating MU plugin that acts as the platform kernel. Loaded by WordPress before the theme, it consists of a thin loader that fetches and bootstraps the core application from GitHub releases automatically. A built-in WP-Cron job checks for updates twice daily, validates downloads with SHA-256, and overwrites the kernel in place. Also owns the theme update pipeline (channel/pin/install/reinstall against `webmultipliers/examplepress-theme`) via `Infrastructure/ThemeUpdateProvider`.
 
 ### Infrastructure
 
-**[`examplepress-theme`](https://github.com/webmultipliers/examplepress-theme)** — The foundational layer. Removes the standard WordPress template hierarchy and replaces it with a router-first architecture. Routes requests, orchestrates the environment, installs dependencies, and provides the hooks that allow apps to render content.
-
-**[`examplepress-theme-update`](https://github.com/webmultipliers/examplepress-theme-update)** — A decoupled updater for the theme that pulls releases directly from GitHub — not through Troy. Separated from the theme itself for resilience — if the theme hits a fatal error, the standalone updater remains functional and can still pull patches and hotfixes. Supports stable/development channels and version pinning.
+**[`examplepress-theme`](https://github.com/webmultipliers/examplepress-theme)** — The foundational layer. Removes the standard WordPress template hierarchy and replaces it with a router-first architecture. Routes requests, orchestrates the environment, installs dependencies, and provides the hooks that allow apps to render content. Theme updates are delivered by the MU kernel's `ThemeUpdateProvider`.
 
 ### Application Layer
 
@@ -98,7 +98,6 @@ examplepress/
 │   │   ├── plugins/
 │   │   │   ├── examplepress-theme-app/
 │   │   │   ├── examplepress-theme-demo/
-│   │   │   ├── examplepress-theme-update/
 │   │   │   └── examplepress-troy-bridge/
 │   │   └── mu-plugins/
 │   │       └── examplepress-mu/

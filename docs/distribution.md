@@ -46,14 +46,14 @@ The `updates.json` asset attached to each GitHub release:
 |---|---|---|
 | `ep_mu_update_check` | 12 hours | Prevents overlapping checks between cron fires |
 
-### Theme Update Plugin
+### Theme Update Provider
 
-The theme update plugin (`packages/wp/plugins/examplepress-theme-update`) manages ExamplePress theme versioning through GitHub Releases. Like the MU self-updater, it pulls directly from GitHub — not through Troy.
+The theme update provider lives inside the MU at `packages/wp/mu-plugins/examplepress-mu/examplepress-mu/src/Infrastructure/ThemeUpdateProvider.php`. It manages ExamplePress theme versioning through GitHub Releases. Like the MU self-updater, it pulls directly from GitHub — not through Troy.
 
 #### Update flow
 
 1. WordPress fires `pre_set_site_transient_update_themes`
-2. The plugin fetches an `updates.json` manifest from GitHub Releases
+2. `ThemeUpdateProvider` fetches an `updates.json` manifest from GitHub Releases
 3. If a newer version is available, it injects the update into WordPress's native `update_themes` transient
 4. WordPress shows the update on Dashboard > Updates and Appearance > Themes
 
@@ -61,9 +61,9 @@ The theme update plugin (`packages/wp/plugins/examplepress-theme-update`) manage
 
 Updates follow a channel system. Resolution order (highest priority first):
 
-1. **PHP filter**: `examplepress_update_channel`
-2. **Constant**: `EP_UPDATE_CHANNEL` in `wp-config.php`
-3. **Option**: `ep_update_channel` (set via admin UI or REST)
+1. **PHP filter**: `examplepress_mu_theme_update_channel`
+2. **Constant**: `EP_THEME_UPDATE_CHANNEL` in `wp-config.php`
+3. **Option**: `ep_theme_update_channel` (set via admin UI or REST)
 4. **Auto-detect**: if the installed version contains `dev`, `alpha`, `beta`, or `rc` → `development`; otherwise → `stable`
 5. **Default**: `stable`
 
@@ -73,7 +73,7 @@ The **stable** channel pulls from GitHub's latest release. The **development** c
 
 Pin a specific version to prevent updates beyond it:
 
-- `update_option( 'ep_pinned_version', '1.2.3' )`
+- `update_option( 'ep_theme_update_pinned', '1.2.3' )`
 - If pinned = installed → no update offered
 - If pinned > installed → update to pinned version
 - If pinned < installed → no downgrade
@@ -99,32 +99,24 @@ The `updates.json` file in GitHub Releases:
 | Cache key | TTL | Purpose |
 |---|---|---|
 | `ep_theme_update_manifest` | 6 hours | Manifest JSON |
-| `ep_github_releases` | 30 minutes | Releases list |
+| `ep_theme_update_releases` | 30 minutes | Releases list |
 | Error sentinel | 5 minutes | Prevents hammering after failures |
 
-Cache is flushed on theme switch, after theme update, or manually via `POST /wp-json/ep-theme-update/v1/check`.
+Cache is flushed on theme switch, after theme update, or manually via `POST /wp-json/examplepress-mu/v1/theme-update/check`.
 
 #### REST API
 
-All endpoints require the `update_themes` capability. Namespace: `ep-theme-update/v1`.
+All endpoints require the `update_themes` capability. Namespace: `examplepress-mu/v1`.
 
 | Method | Route | Purpose |
 |---|---|---|
-| GET | `/status` | Current version, latest, channel, pin state |
-| GET | `/releases` | GitHub releases list |
-| POST | `/check` | Flush cache, return fresh status |
-| PUT | `/channel` | Set channel (`stable` or `development`) |
-| PUT | `/pin` | Set or clear pinned version |
-| POST | `/install` | Trigger theme update |
-| POST | `/reinstall` | Reinstall current or specified version |
-
-#### Self-protection
-
-While ExamplePress is the active theme, the update plugin protects itself:
-
-- Removes "Deactivate" and "Delete" links from the Plugins list
-- Blocks programmatic deactivation with `wp_die()`
-- Shows a warning if the plugin is active but the theme is not
+| GET | `/theme-update/status` | Current version, latest, channel, pin state |
+| GET | `/theme-update/releases` | GitHub releases list |
+| POST | `/theme-update/check` | Flush cache, return fresh status |
+| PUT | `/theme-update/channel` | Set channel (`stable` or `development`) |
+| PUT | `/theme-update/pin` | Set or clear pinned version |
+| POST | `/theme-update/install` | Trigger theme update |
+| POST | `/theme-update/reinstall` | Reinstall current or specified version |
 
 ## Troy (Fleet Distribution)
 
